@@ -1,0 +1,53 @@
+thead{
+    border-bottom: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 8px;
+    text-align: left;
+}
+.heading{
+    font-size: 25px;
+}
+
+.wraper{
+    position: relative;
+}
+form i{
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 99999;
+}
+
+form .fbt{
+    background-color: #C2E7FF;
+}
+.profile-img{
+    width: 100px;
+    height: 100px;
+    position: relative;
+   
+}
+.profile-img img{
+   width: 100px;
+   height: 100px;
+}
+.profile-img .img-add{
+    position: absolute;
+    top: 70px;
+    left: 70px;
+}
+.img-add{
+    width: 30px;
+    height: 30px;
+    font-size: 25px;
+    color: aliceblue;
+    background-color: #0D6EFD;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,58 @@
+.inpu{
+  width: 100%;
+}
+form{
+  width: 40%;
+}
+.profile{
+  background-color: red;
+  width: 50px;
+  height: 50px;
+
+}
+#navbarScroll{
+  display: flex;
+  justify-content: space-between;
+}
+.icons{
+  display: flex;
+  flex-wrap: wrap;
+}
+.icons i{
+ font-size: 25px;
+ justify-content: center;
+ align-items: center;
+ display: flex;
+ padding: 15px;
+}
+.sidebar{
+  height: 100Vh;
+  background-color: #F8FAFD;
+}
+.bg-blu{
+  background-color: #C2E7FF;
+  border: none;
+  border-radius: 15px;
+  font-weight: 400;
+  font-size: 20px;
+}
+.bt{
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 20px;
+}
+table{
+  width: 100%;
+}
+ .img-1{
+  width: 50px;
+  height: 50px;
+}
+a{
+  list-style: none;
+  text-decoration: none;
+  color: #0158CC;
+}
+input{
+  padding-left: 10px;
+}
