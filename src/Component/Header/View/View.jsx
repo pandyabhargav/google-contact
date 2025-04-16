@@ -1,99 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { db, collection, getDocs, deleteDoc, doc } from '../../../Firebase';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
+import { Link} from "react-router-dom";
 
 function View({ searchTerm }) {
-    let navigate = useNavigate();
+  const [viwevData, setvievData] = useState([]);
 
-    useEffect(() => {
-        const visited = localStorage.getItem('visited');
 
-        if (!visited) {
-            localStorage.setItem('visited', 'true');
-            navigate('/singin');
-        }
-    }, [navigate]);
+  useEffect(() => {
+    fetchdata();
+  }, []);
 
-    const [contacts, setContacts] = useState([]);
-    const [filteredContacts, setFilteredContacts] = useState([]);
+  const fetchdata = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/user");
+      setvievData(response.data);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
 
-    useEffect(() => {
-        const fetchContacts = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, 'contacts'));
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure to delete?")) {
+      try {
+        await axios.delete(`http://localhost:3000/api/user/${id}`);
+        fetchdata(); // refresh after delete
+      } catch (error) {
+        console.error("Error deleting contact:", error);
+      }
+    }
+  };
 
-                const contactsData = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
+  const filteredData = viwevData.filter((contact) =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-                setContacts(contactsData);
-                setFilteredContacts(contactsData); 
-            } catch (error) {
-                console.error('Error fetching contacts: ', error);
-            }
-        };
-
-        fetchContacts();
-    }, []);
-
-    useEffect(() => {
-        const results = contacts.filter(contact =>
-            contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            contact.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            contact.company.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredContacts(results);
-    }, [searchTerm, contacts]);
-
-    const handleDelete = async (id) => {
-        try {
-            await deleteDoc(doc(db, 'contacts', id));
-            setContacts(prevContacts => prevContacts.filter(contact => contact.id !== id));
-            setFilteredContacts(prevContacts => prevContacts.filter(contact => contact.id !== id));
-            console.log('Document successfully deleted!');
-        } catch (error) {
-            console.error('Error removing document: ', error);
-        }
-    };
-
-    return (
-        <div className='col-10 p-5'>
-            <div className='p-1 heading'>
-                Contacts
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact Number</th>
-                        <th>Company</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredContacts.map(contact => (
-                        <tr key={contact.id}>
-                            <td><img src="https://randomuser.me/api/portraits/men/32.jpg" className='img-1 p-2 rounded-pill bt' alt="" /> {contact.name}</td>
-                            <td>{contact.email}</td>
-                            <td>{contact.phoneNumber}</td>
-                            <td>{contact.company}</td>
-                            <td>
-                                <Link to={`/edit/${contact.id}`}>
-                                    <Button className='mx-2 text-white'><i className="fa-solid fa-pen-to-square"></i></Button>
-                                </Link>
-                                <Button className='mx-2' onClick={() => handleDelete(contact.id)}><i className="fa-solid fa-trash"></i></Button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+  return (
+    <div className="col-10 p-5">
+      <div className="p-1 heading">Contacts</div>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact Number</th>
+            <th>Company</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData.map((contact) => {
+            console.log("Contact:", contact); // ✅ log every contact
+            return (
+              <tr key={contact._id}>
+                <td>
+                  <img
+                      src={`http://localhost:3000/${contact.image.replace("\\", "/")}`}
+                    className="img-1 p-2 rounded-circle"
+                    alt="avatar"
+                    width="50"
+                  />
+                </td>
+                <td>{contact.name}</td>
+                <td>{contact.email}</td>
+                <td>{contact.PhoneNo}</td>
+                <td>{contact.Compny}</td>
+                <td>
+                  <Link to={`/edit/${contact._id}`}>
+                    <Button className="mx-2 text-white">
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                  </Link>
+                  <Button
+                    className="mx-2"
+                    onClick={() => handleDelete(contact._id)}
+                  >
+                    <i className="fa-solid fa-trash"></i>
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export default View;
